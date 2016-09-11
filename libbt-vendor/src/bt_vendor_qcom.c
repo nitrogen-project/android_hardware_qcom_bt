@@ -37,7 +37,9 @@
 #include <sys/socket.h>
 #include <cutils/sockets.h>
 #include <linux/un.h>
+#ifdef BT_NV_SUPPORT
 #include "bt_vendor_persist.h"
+#endif
 #include "hw_rome.h"
 #include "bt_vendor_lib.h"
 #define WAIT_TIMEOUT 200000
@@ -973,12 +975,14 @@ userial_open:
                                      ignore_boot_prop = TRUE;
                                 }
 #endif //READ_BT_ADDR_FROM_PROP
+#ifdef BT_NV_SUPPORT
                                     /* Always read BD address from NV file */
                                 if(ignore_boot_prop && !bt_vendor_nv_read(1, q->bdaddr))
                                 {
                                    /* Since the BD address is configured in boot time We should not be here */
                                    ALOGI("Failed to read BD address. Use the one from bluedroid stack/ftm");
                                 }
+#endif //BT_NV_SUPPORT
                                 if(rome_soc_init(fd, (char*)q->bdaddr)<0) {
                                     retval = -1;
                                 } else {
